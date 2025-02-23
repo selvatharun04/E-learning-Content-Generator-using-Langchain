@@ -51,6 +51,19 @@ def generate_summary_from_pdf(pdf_file):
     summary_chain=LLMChain(llm=llm,prompt=summary_prompt)
     return summary_chain.run({"text": text})
 
+def translation(subject,topic,level,output_lang):
+    translation_prompt=PromptTemplate(input_variables=[subject,topic,level,output_lang],
+                                     template="Translate the lesson on {subject} about {topic} for {level} students to {output_lang}")
+    translation_chain=LLMChain(llm=llm,prompt=translation_prompt)
+    return translation_chain.run({"subject": subject, "topic": topic, "level": level, "output_lang": output_lang})
+
+def translate_from_pdf(pdf_file, output_lang):
+    text = extract_text_from_pdf(pdf_file)
+    translate_prompt = PromptTemplate(input_variables=["text", "output_lang"],
+                                      template="Translate the {text} to {output_lang} language")
+    translate_chain = LLMChain(llm=llm, prompt=translate_prompt)
+    return translate_chain.run({"text": text, "output_lang": output_lang})
+
 
 def save_as_pdf(content, filename):
     pdf = FPDF()
@@ -66,6 +79,7 @@ st.header("Enter The Below Details to Generate Lessons , Quiz and Summary")
 subject=st.text_input("Enter Name of Subject:")
 topic=st.text_input("Enter Topic of the Subject:")
 level=st.radio("Select the level of students",["Primary School","High School","Bachelor's Degree","Master's Degree","Doctorate Degree"])
+output_lang=st.text_input("Enter the language to which you want to translate the lesson:")
 
 no_mcq=st.number_input("Enter Number of Multiple Choice Questions needed for Quiz",min_value=0,max_value=10,key="no_mcq")
 no_tof=st.number_input("Enter Number of True or False Questions needed for Quiz",min_value=0,max_value=10,key="no_tof")
@@ -103,6 +117,17 @@ if 'summary' in st.session_state:
     if st.button("Save Summary as PDF"):
         save_as_pdf(st.session_state['summary'], "summary.pdf")
         st.success("Summary saved as summary.pdf")
+        
+if st.button("Translate Lesson"):
+    translated_lesson = translation(subject, topic, level, output_lang)
+    st.subheader("Translated Lesson")
+    st.write(translated_lesson)
+    st.session_state['translated_lesson'] = translated_lesson
+    
+if 'translated_lesson' in st.session_state:
+    if st.button("Save Translated Lesson as PDF"):
+        save_as_pdf(st.session_state['translated_lesson'], "translated_lesson.pdf")
+        st.success("Translated Lesson saved as translated_lesson.pdf")
     
 st.header("Upload PDF File to Generate Quiz and Summary")
 pdf_file=st.file_uploader("Upload PDF File",type=['pdf'])
@@ -111,6 +136,8 @@ st.subheader("Note: The PDF File should contain text to generate Quiz and Summar
 no_mcq_pdf=st.number_input("Enter Number of Multiple Choice Questions needed for Quiz",min_value=0,max_value=10,key="no_mcq_pdf")
 no_tof_pdf=st.number_input("Enter Number of True or False Questions needed for Quiz",min_value=0,max_value=10,key="no_tof_pdf")
 no_fib_pdf=st.number_input("Enter Number of Fill in the Blanks needed for Quiz",min_value=0,max_value=10,key="no_fib_pdf")
+output_lang_pdf = st.text_input("Enter the language to which you want to translate the PDF:")
+
 
 if pdf_file:
     if st.button("Generate Quiz from PDF"):
@@ -134,6 +161,17 @@ if pdf_file:
         if st.button("Save Summary as PDF"):
             save_as_pdf(st.session_state['summary_from_pdf'], "summary_from_pdf.pdf")
             st.success("Summary saved as summary_from_pdf.pdf")
+            
+    if st.button("Translate from PDF"):
+        translated_pdf = translate_from_pdf(pdf_file, output_lang_pdf)
+        st.subheader("Translated PDF")
+        st.write(translated_pdf)
+        st.session_state['translated_pdf'] = translated_pdf
+        
+    if 'translated_pdf' in st.session_state:
+        if st.button("Save Translated PDF as PDF"):
+            save_as_pdf(st.session_state['translated_pdf'], "translated_pdf.pdf")
+            st.success("Translated PDF saved as translated_pdf.pdf")
 
 
 
