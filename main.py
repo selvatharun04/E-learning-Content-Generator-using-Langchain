@@ -1,5 +1,4 @@
 import os
-import streamlit as st 
 from langchain_google_genai import ChatGoogleGenerativeAI 
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -7,7 +6,9 @@ from dotenv import load_dotenv
 import PyPDF2
 from fpdf import FPDF
 
-load_dotenv()
+
+
+load_dotenv(override=True)
 
 llm= ChatGoogleGenerativeAI(model='gemini-1.5-pro',google_api_key=os.getenv("API_KEY"))
 
@@ -15,7 +16,7 @@ def generate_lesson(subject,topic,level):
     lesson_prompt=PromptTemplate(input_variables=[subject,topic,level],
                                  template="Create a lesson on {subject} about {topic} for {level} students that should include Lesson Objectives,Explanation on topic with examples")
     lesson_chain= LLMChain(llm=llm,prompt=lesson_prompt)
-    return lesson_chain.run({"subject": subject, "topic": topic, "level": level})
+    return lesson_chain.run({"subject": subject, "topic": topic, "level": level}).content
 
 def generate_quiz(subject,topic,level,no_mcq,no_tof,no_fib):
     quiz_prompt=PromptTemplate(input_variables=[subject,topic,level,no_mcq,no_tof,no_fib],
@@ -72,4 +73,19 @@ def save_as_pdf(content, filename):
     pdf.set_font("Arial", size=12)
     pdf.multi_cell(0, 10, content)
     pdf.output(filename)
+
+def generate_flashcards(subject, topic, level):
+    flashcard_prompt = PromptTemplate(input_variables=[subject, topic, level],
+                                      template="Create flashcards on {subject} about {topic} for {level} students. Each flashcard should have a question on one side and the answer on the other side.")
+    flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
+    return flashcard_chain.run({"subject": subject, "topic": topic, "level": level})
+
+def generate_flashcards_from_pdf(pdf_file):
+    text = extract_text_from_pdf(pdf_file)
+    flashcard_prompt = PromptTemplate(input_variables=["text"],
+                                      template="Create flashcards from the following text: {text}. Each flashcard should have a question on one side and the answer on the other side.")
+    flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
+    return flashcard_chain.run({"text": text})
+
+
 
