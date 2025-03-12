@@ -14,7 +14,7 @@ llm= ChatGoogleGenerativeAI(model='gemini-1.5-pro',google_api_key=os.getenv("API
 
 def generate_lesson(subject,topic,level):
     lesson_prompt=PromptTemplate(input_variables=[subject,topic,level],
-                                 template="Create a lesson on {subject} about {topic} for {level} students that should include Lesson Objectives,Explanation on topic with examples")
+                                 template=("Create a detailed lesson on {subject} covering the topic of {topic} for {level} students. The lesson should include Clear and measurable lesson objectives,A thorough explanation of the topic, broken down into easy-to-follow sections.Relevant examples to illustrate key concepts and ensure understanding"))
     lesson_chain= LLMChain(llm=llm,prompt=lesson_prompt)
     return lesson_chain.run({"subject": subject, "topic": topic, "level": level}).content
 
