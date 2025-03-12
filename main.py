@@ -86,6 +86,3 @@ def generate_flashcards_from_pdf(pdf_file):
                                       template="Create flashcards from the following text: {text}. Each flashcard should have a question on one side and the answer on the other side.")
     flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
     return flashcard_chain.run({"text": text})
-
-
-
