@@ -1,5 +1,5 @@
 import streamlit as st
-from main import generate_lesson, generate_quiz, generate_summary, generate_quiz_from_pdf, generate_summary_from_pdf, translation, translate_from_pdf, save_as_pdf
+from main import generate_lesson, generate_quiz, generate_summary, generate_quiz_from_pdf, generate_summary_from_pdf, translation, translate_from_pdf, save_as_pdf ,generate_flashcards
 import base64
 from gtts import gTTS
 
@@ -78,6 +78,22 @@ if 'summary' in st.session_state:
         st.success("Audio narration saved as summary.mp3")
         display_audio("summary.mp3")
 
+if st.button("Generate Flashcards"):
+    flashcards = generate_flashcards(subject, topic, level)
+    st.subheader("Generated Flashcards")
+    st.write(flashcards)
+    st.session_state['flashcards'] = flashcards
+
+if 'flashcards' in st.session_state:
+    if st.button("Save Flashcards as PDF"):
+        save_as_pdf(st.session_state['flashcards'], "flashcards.pdf")
+        st.success("Flashcards saved as flashcards.pdf")
+        display_pdf("flashcards.pdf")
+    if st.button("Generate Audio Narration for Flashcards"):
+        text_to_audio(st.session_state['flashcards'], "flashcards.mp3")
+        st.success("Audio narration saved as flashcards.mp3")
+        display_audio("flashcards.mp3")
+    
 if st.button("Translate Lesson"):
     translated_lesson = translation(subject, topic, level, output_lang)
     st.subheader("Translated Lesson")

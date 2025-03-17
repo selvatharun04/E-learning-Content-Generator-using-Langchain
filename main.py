@@ -14,13 +14,16 @@ llm= ChatGoogleGenerativeAI(model='gemini-1.5-pro',google_api_key=os.getenv("API
 
 def generate_lesson(subject,topic,level):
     lesson_prompt=PromptTemplate(input_variables=[subject,topic,level],
-                                 template=("Create a detailed lesson on {subject} covering the topic of {topic} for {level} students. The lesson should include Clear and measurable lesson objectives,A thorough explanation of the topic, broken down into easy-to-follow sections.Relevant examples to illustrate key concepts and ensure understanding"))
+                                 template=""" Create a detailed lesson on {subject} covering the topic of {topic} for {level} students.
+                                 The lesson should include Clear and measurable lesson objectives,A thorough explanation of the topic,
+                                 broken down into easy-to-follow sections.Relevant examples to illustrate key concepts and ensure understanding """)
     lesson_chain= LLMChain(llm=llm,prompt=lesson_prompt)
-    return lesson_chain.run({"subject": subject, "topic": topic, "level": level}).content
+    return lesson_chain.run({"subject":subject, "topic":topic, "level": level})
 
 def generate_quiz(subject,topic,level,no_mcq,no_tof,no_fib):
     quiz_prompt=PromptTemplate(input_variables=[subject,topic,level,no_mcq,no_tof,no_fib],
-                               template="Create a quiz on {subject} on {topic} for {level} students that should include {no_mcq} Multiple Choice Questions,{no_tof} true or false questions and {no_fib} fill in the blanks")
+                               template="Create a quiz on {subject} on {topic} for {level} students that should include {no_mcq} Multiple Choice Questions,{no_tof} true or false questions ,"
+                               "and {no_fib} fill in the blanks")
     quiz_chain=LLMChain(llm=llm,prompt=quiz_prompt)
     return quiz_chain.run({"subject": subject, "topic": topic, "level": level,"no_mcq": no_mcq ,"no_tof": no_tof,"no_fib": no_fib})
 
@@ -60,7 +63,7 @@ def translation(subject,topic,level,output_lang):
 
 def translate_from_pdf(pdf_file, output_lang):
     text = extract_text_from_pdf(pdf_file)
-    translate_prompt = PromptTemplate(input_variables=["text", "output_lang"],
+    translate_prompt = PromptTemplate(input_variables=[text,output_lang],
                                       template="Translate the {text} to {output_lang} language")
     translate_chain = LLMChain(llm=llm, prompt=translate_prompt)
     return translate_chain.run({"text": text, "output_lang": output_lang})
@@ -82,7 +85,7 @@ def generate_flashcards(subject, topic, level):
 
 def generate_flashcards_from_pdf(pdf_file):
     text = extract_text_from_pdf(pdf_file)
-    flashcard_prompt = PromptTemplate(input_variables=["text"],
+    flashcard_prompt = PromptTemplate(input_variables=[text],
                                       template="Create flashcards from the following text: {text}. Each flashcard should have a question on one side and the answer on the other side.")
     flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
     return flashcard_chain.run({"text": text})
