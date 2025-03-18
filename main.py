@@ -5,6 +5,7 @@ from langchain.chains import LLMChain
 from dotenv import load_dotenv
 import PyPDF2
 from fpdf import FPDF
+import base64
 
 
 
@@ -69,13 +70,16 @@ def translate_from_pdf(pdf_file, output_lang):
     return translate_chain.run({"text": text, "output_lang": output_lang})
 
 
-def save_as_pdf(content, filename):
+def display_pdf(content):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, content)
-    pdf.output(filename)
+    pdf.multi_cell(0, 10, content.encode('latin-1', 'replace').decode('latin-1'))
+    pdf_output = pdf.output(dest='S').encode('latin-1')
+    base64_pdf = base64.b64encode(pdf_output).decode('utf-8')
+    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
+    return pdf_display
 
 def generate_flashcards(subject, topic, level):
     flashcard_prompt = PromptTemplate(input_variables=[subject, topic, level],
