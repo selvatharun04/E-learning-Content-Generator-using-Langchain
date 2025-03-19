@@ -1,5 +1,5 @@
 import streamlit as st
-from main import generate_quiz, display_pdf
+from main import generate_quiz, display_pdf,translation
 
 st.set_page_config(page_title="Quiz Generator", page_icon="📝")
 
@@ -24,3 +24,9 @@ if 'quiz' in st.session_state:
     if st.button("View Quiz as PDF"):
         pdf_display = display_pdf(st.session_state['quiz'])
         st.markdown(pdf_display, unsafe_allow_html=True)
+    
+    output_lang = st.text_input("Enter the language to which you want to translate the quiz:", key="output_lang")
+    if st.button("Translate Quiz"):
+        translated_quiz = translation(st.session_state['quiz'], output_lang)
+        st.subheader("Translated Quiz")
+        st.write(translated_quiz)

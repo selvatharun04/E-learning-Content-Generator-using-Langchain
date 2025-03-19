@@ -1,5 +1,4 @@
 import streamlit as st
-import base64
 from main import generate_lesson,translation,display_pdf
 
 
@@ -24,12 +23,8 @@ if 'lesson' in st.session_state:
         pdf_display = display_pdf(st.session_state['lesson'])
         st.markdown(pdf_display, unsafe_allow_html=True)
 
-st.subheader("You can change the generated lesson to your desired language")
-
-output_lang = st.text_input("Enter the language to which you want to translate the lesson:", key="output_lang")
-
-if st.button("Translate Lesson"):
-    translated_lesson = translation(subject, topic, level, output_lang)
-    st.subheader("Translated Lesson")
-    st.write(translated_lesson)
-    st.session_state['translated_lesson'] = translated_lesson
+    output_lang = st.text_input("Enter the language to which you want to translate the lesson:", key="output_lang")
+    if st.button("Translate Lesson"):
+        translated_lesson = translation(st.session_state['lesson'], output_lang)
+        st.subheader("Translated Lesson")
+        st.write(translated_lesson)
