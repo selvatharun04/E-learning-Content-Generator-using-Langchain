@@ -13,14 +13,18 @@ no_fib_pdf = st.number_input("Enter Number of Fill in the Blanks needed for Quiz
 if pdf_file:
     if st.button("Generate Quiz"):
         quiz = generate_quiz_from_pdf(pdf_file,no_mcq_pdf, no_tof_pdf, no_fib_pdf)
-        st.subheader("Generated Quiz")
-        st.write(quiz)
         st.session_state['quiz'] = quiz
-    if st.button("View Quiz as PDF"):
-        pdf_display = display_pdf(st.session_state['quiz'])
-        st.markdown(pdf_display, unsafe_allow_html=True)
+    if 'quiz' in st.session_state:
+        st.subheader("Generated Quiz")
+        st.write(st.session_state['quiz'])
+        if st.button("View Quiz as PDF"):
+            pdf_display = display_pdf(st.session_state['quiz'])
+            st.markdown(pdf_display, unsafe_allow_html=True)
     output_lang = st.text_input("Enter the language to which you want to translate the quiz:", key="output_lang")
     if st.button("Translate Quiz"):
         translated_quiz = translation(st.session_state['quiz'], output_lang)
-        st.subheader("Translated Quiz")
-        st.write(translated_quiz)
+        st.session_state['translated_quiz'] = translated_quiz
+
+if 'translated_quiz' in st.session_state:
+    st.subheader("Translated Quiz")
+    st.write(st.session_state['translated_quiz'])

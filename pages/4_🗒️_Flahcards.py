@@ -13,11 +13,12 @@ no_flashcard = st.number_input("Number of Flashcards to be Generated",min_value=
 
 if st.button("Generate Flashcards"):
     flashcards = generate_flashcards(subject, topic, level, no_flashcard)
-    st.subheader("Generated Flashcards")
-    st.write(flashcards)
     st.session_state['flashcards'] = flashcards
 
 if 'flashcards' in st.session_state:
+    st.subheader("Generated Flashcards")
+    st.write(st.session_state['flashcards'])
+
     if st.button("View Flashcards as PDF"):
         pdf_display = display_pdf(st.session_state['flashcards'])
         st.markdown(pdf_display, unsafe_allow_html=True)
@@ -25,5 +26,8 @@ if 'flashcards' in st.session_state:
     output_lang = st.text_input("Enter the language to which you want to translate the flashcards:", key="output_lang")
     if st.button("Translate Flashcards"):
         translated_flashcards = translation(st.session_state['flashcards'], output_lang)
-        st.subheader("Translated Flashcards")
-        st.write(translated_flashcards)
+        st.session_state['translated_flashcards'] = translated_flashcards
+
+if 'translated_flashcards' in st.session_state:
+    st.subheader("Translated Flashcards")
+    st.write(st.session_state['translated_flashcards'])

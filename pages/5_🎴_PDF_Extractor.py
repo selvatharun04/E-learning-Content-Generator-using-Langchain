@@ -18,22 +18,23 @@ with col2:
 if pdf_file:
     if button1:
         flashcards = generate_flashcards_from_pdf(pdf_file)
-        st.subheader("Generated Flashcards")
-        st.write(flashcards)
         st.session_state['flashcards'] = flashcards
-        
-    if st.button("View Flashcards as PDF"):
-        pdf_display = display_pdf(st.session_state['flashcards'])
-        st.markdown(pdf_display, unsafe_allow_html=True)
+    if 'flashcards' in st.session_state:
+        st.subheader("Generated Flashcards")
+        st.write(st.session_state['flashcards'])    
+        if st.button("View Flashcards as PDF"):
+            pdf_display = display_pdf(st.session_state['flashcards'])
+            st.markdown(pdf_display, unsafe_allow_html=True)
    
 
     if button2:
         summary = generate_summary_from_pdf(pdf_file)
-        st.subheader("Generated Summary")
-        st.write(summary)
         st.session_state['summary'] = summary
-    if st.button("View Summary as PDF"):
-        pdf_display = display_pdf(st.session_state['summary'])
-        st.markdown(pdf_display, unsafe_allow_html=True)
+    if 'summary' in st.session_state:
+        st.subheader("Summary")
+        st.write(st.session_state['summary'])
+        if st.button("View Summary as PDF"):
+            pdf_display = display_pdf(st.session_state['summary'])
+            st.markdown(pdf_display, unsafe_allow_html=True)
    
 

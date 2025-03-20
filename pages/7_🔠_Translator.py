@@ -11,6 +11,8 @@ output_lang = st.text_input("Enter the language to which you want to translate t
 if st.button("Translate PDF"):
     text = extract_text_from_pdf(pdf_file)
     translated_pdf=generate_translator(text, output_lang)
-    st.subheader("Translated PDF")
-    st.write(translated_pdf)
+    st.session_state['translated_pdf'] = translated_pdf
+    if 'translated_pdf' in st.session_state:
+        st.subheader("Translated PDF")
+        st.write(st.session_state['translated_pdf'])
     
