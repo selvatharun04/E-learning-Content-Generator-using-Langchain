@@ -24,3 +24,15 @@ I also include some additional features For Uploading PDF file to generate quizz
     ```sh
     python -m venv .venv
     .venv\Scripts\activate
+
+3. Install the required dependencies:
+    ```sh 
+    pip install -r requirements.txt
+
+4. Set up environment variables: Create a .env file in the root directory   and add your Google API key:
+    ```sh
+    API_KEY=your_google_api_key
+
+5. Run Home.py to run the streamlit application
+    ```sh
+    streamlit run app.py
