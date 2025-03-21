@@ -4,6 +4,8 @@ This Project is an E-learning content generator that uses langchain and streamli
 
 I also include some additional features For Uploading PDF file to generate quizzes,summaries,flashcard and translation of the PDF
 
+Streamlit Application link : https://e-learning-content-generator-using-langchain-xlg5qyxhbbxz3rbxz.streamlit.app/Lesson
+
 # Features that are available:
 
 - Generate detailed lessons based on subjects, topic, level of the student
