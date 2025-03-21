@@ -21,5 +21,6 @@ I also include some additional features For Uploading PDF file to generate quizz
    cd e-learning-content-generator
 
 2. Create a virtual enviroment and activate it:
+    ```sh
     python -m venv .venv
     .venv\Scripts\activate
