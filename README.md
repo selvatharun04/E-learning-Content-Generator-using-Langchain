@@ -8,7 +8,7 @@ I also include some additional features For Uploading PDF file to generate quizz
 
 - Generate detailed lessons based on subjects, topic, level of the student
 - Generate Quizzes based on subject, topic, level of the student and the user can include how many number of Multi-Choice Questions,True or Flase and Fill in the Blanks to be added
--Generate Summaries based on Subject,Topic, and Level of the Students
--Translate Lesson,Quizes and Summaries into our desired language
--Can able to download the generated lesson,quiz,summaries into PDF
--Upload PDF files to generate summaries,quizzes,and translations for the PDF
+- Generate Summaries based on Subject,Topic, and Level of the Students
+- Translate Lesson,Quizes and Summaries into our desired language
+- Can able to download the generated lesson,quiz,summaries into PDF
+- Upload PDF files to generate summaries,quizzes,and translations for the PDF
