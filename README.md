@@ -12,3 +12,14 @@ I also include some additional features For Uploading PDF file to generate quizz
 - Translate Lesson,Quizes and Summaries into our desired language
 - Can able to download the generated lesson,quiz,summaries into PDF
 - Upload PDF files to generate summaries,quizzes,and translations for the PDF
+
+## Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/e-learning-content-generator.git
+   cd e-learning-content-generator
+
+2. Create a virtual enviroment and activate it:
+    python -m venv .venv
+    .venv\Scripts\activate
