@@ -40,13 +40,14 @@ I also include some additional features For Uploading PDF file to generate quizz
 # Page Overview
 
 1. File : main.py
+    
     Description : This file contains the core functions for generating lessons, quizzes, summaries, translations, and flashcards. It also includes functions for extracting text from PDF files and generating content from PDFs.
 
 - Function: generate_lesson
 
-        Purpose: Generates a detailed lesson based on the subject, topic, and level of the students.
-        Parameters: subject, topic, level
-        Returns: A generated lesson as a string.
+        -- Purpose: Generates a detailed lesson based on the subject, topic, and level of the students.
+        -- Parameters: subject, topic, level
+        -- Returns: A generated lesson as a string.
 - Function: generate_quiz
 
         Purpose: Generates a quiz based on the subject, topic, level, and the number of different types of questions.
