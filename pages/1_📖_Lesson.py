@@ -1,8 +1,6 @@
 import streamlit as st
 from main import generate_lesson,translation,display_pdf
 
-
-
 st.set_page_config(page_title="Lesson Generator", page_icon="📖")
 
 st.title("Generate Lesson")
