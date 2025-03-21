@@ -8,6 +8,3 @@ st.subheader("You can generate lessons, quizzes, summaries, flashcards, and tran
 st.subheader("You can also translate text to different languages.")
 st.subheader("To get started, select a page from the sidebar.")
 
-
-
-
