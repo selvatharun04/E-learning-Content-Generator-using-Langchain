@@ -1,5 +1,5 @@
 import streamlit as st
-from main import generate_quiz, display_pdf,translation
+from main import generate_quiz, display_pdf, translation
 
 st.set_page_config(page_title="Quiz Generator", page_icon="📝")
 
@@ -15,21 +15,30 @@ no_tof = st.number_input("Enter Number of True or False Questions needed for Qui
 no_fib = st.number_input("Enter Number of Fill in the Blanks needed for Quiz", min_value=0, max_value=10, key="no_fib")
 
 if st.button("Generate Quiz"):
-    quiz = generate_quiz(subject, topic, level, no_mcq, no_tof, no_fib)
-    st.session_state['quiz'] = quiz
+    try:
+        quiz = generate_quiz(subject, topic, level, no_mcq, no_tof, no_fib)
+        st.session_state['quiz'] = quiz
+    except Exception as e:
+        st.error(f"An error occurred while generating the quiz: {e}")
 
 if 'quiz' in st.session_state:
     st.subheader("Generated Quiz")
     st.write(st.session_state['quiz'])
 
     if st.button("View Quiz as PDF"):
-        pdf_display = display_pdf(st.session_state['quiz'])
-        st.markdown(pdf_display, unsafe_allow_html=True)
+        try:
+            pdf_display = display_pdf(st.session_state['quiz'])
+            st.markdown(pdf_display, unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"An error occurred while generating the PDF: {e}")
     
     output_lang = st.text_input("Enter the language to which you want to translate the quiz:", key="output_lang")
     if st.button("Translate Quiz"):
-        translated_quiz = translation(st.session_state['quiz'], output_lang)
-        st.session_state['translated_quiz'] = translated_quiz
+        try:
+            translated_quiz = translation(st.session_state['quiz'], output_lang)
+            st.session_state['translated_quiz'] = translated_quiz
+        except Exception as e:
+            st.error(f"An error occurred while translating the quiz: {e}")
 
 if 'translated_quiz' in st.session_state:
     st.subheader("Translated Quiz")

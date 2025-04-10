@@ -16,25 +16,41 @@ with col2:
     button2 = st.button('Generate Summary')
 
 if pdf_file:
-    if button1:
-        flashcards = generate_flashcards_from_pdf(pdf_file)
-        st.session_state['flashcards'] = flashcards
-    if 'flashcards' in st.session_state:
-        st.subheader("Generated Flashcards")
-        st.write(st.session_state['flashcards'])    
-        if st.button("View Flashcards as PDF"):
-            pdf_display = display_pdf(st.session_state['flashcards'])
-            st.markdown(pdf_display, unsafe_allow_html=True)
-   
+    try:
+        if button1:
+            try:
+                flashcards = generate_flashcards_from_pdf(pdf_file)
+                st.session_state['flashcards'] = flashcards
+            except Exception as e:
+                st.error(f"Error generating flashcards: {e}")
+        if 'flashcards' in st.session_state:
+            st.subheader("Generated Flashcards")
+            st.write(st.session_state['flashcards'])    
+            if st.button("View Flashcards as PDF"):
+                try:
+                    pdf_display = display_pdf(st.session_state['flashcards'])
+                    st.markdown(pdf_display, unsafe_allow_html=True)
+                except Exception as e:
+                    st.error(f"Error displaying flashcards as PDF: {e}")
 
-    if button2:
-        summary = generate_summary_from_pdf(pdf_file)
-        st.session_state['summary'] = summary
-    if 'summary' in st.session_state:
-        st.subheader("Summary")
-        st.write(st.session_state['summary'])
-        if st.button("View Summary as PDF"):
-            pdf_display = display_pdf(st.session_state['summary'])
-            st.markdown(pdf_display, unsafe_allow_html=True)
-   
+        if button2:
+            try:
+                summary = generate_summary_from_pdf(pdf_file)
+                st.session_state['summary'] = summary
+            except Exception as e:
+                st.error(f"Error generating summary: {e}")
+        if 'summary' in st.session_state:
+            st.subheader("Summary")
+            st.write(st.session_state['summary'])
+            if st.button("View Summary as PDF"):
+                try:
+                    pdf_display = display_pdf(st.session_state['summary'])
+                    st.markdown(pdf_display, unsafe_allow_html=True)
+                except Exception as e:
+                    st.error(f"Error displaying summary as PDF: {e}")
+    except Exception as e:
+        st.error(f"An unexpected error occurred: {e}")
+else:
+    st.warning("Please upload a valid PDF file.")
+
 
