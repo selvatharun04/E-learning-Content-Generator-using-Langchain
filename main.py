@@ -193,5 +193,23 @@ def display_pdf(content):
     except Exception as e:
         return f"Error displaying PDF: {str(e)}"
 
+def anna_univ (subject,topic,marks):
+    try:
+        if not subject or not topic or not marks:
+            raise ValueError("Subject,Topic,Marks must be provided.")
+        anna_univ_prompt = PromptTemplate(
+            input_variables=["subject", "topic", "marks"],
+            template="""Create an answer for a question based on {subject}, covering {topic}, suitable for a {marks}-mark question the answer should be for college students.
 
+            Rules to be followed:
+                1. For 2-mark questions, provide exactly 4 key points.
+                2. For 13-mark questions, the answer should be approximately 4 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
+                3. For 15-mark questions, the answer should be approximately 6 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
+                4. Ensure the answer is clear, concise, and easy to understand.
+                5. Present the answer in bullet points, not paragraphs.
+                6. Adhere to the Anna University examination format.""")
+        anna_univ_chain = LLMChain(llm=llm, prompt=anna_univ_prompt)
+        return anna_univ_chain.run({"subject": subject, "topic": topic, "marks": marks})
+    except Exception as e:
+        return f"Error generating Anna University answer: {str(e)}"
 
