@@ -18,9 +18,15 @@ def generate_lesson(subject, topic, level):
             raise ValueError("Subject, topic, and level must be provided.")
         lesson_prompt = PromptTemplate(
             input_variables=["subject", "topic", "level"],
-            template=""" Create a detailed lesson on {subject} covering the topic of {topic} for {level} students.
-            The lesson should include Clear and measurable lesson objectives, A thorough explanation of the topic,
-            broken down into easy-to-follow sections. Relevant examples to illustrate key concepts and ensure understanding """
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Use clear, concise, and age-appropriate language.
+- Structure the lesson with headings and bullet points where possible.
+- Avoid unnecessary repetition.
+- Ensure factual accuracy and cite examples relevant to the topic.
+- Do not include any content outside the educational scope.
+Create a detailed lesson on {subject} covering the topic of {topic} for {level} students.
+The lesson should include clear and measurable lesson objectives, a thorough explanation of the topic broken down into easy-to-follow sections, and relevant examples to illustrate key concepts and ensure understanding."""
         )
         lesson_chain = LLMChain(llm=llm, prompt=lesson_prompt)
         return lesson_chain.run({"subject": subject, "topic": topic, "level": level})
@@ -35,10 +41,16 @@ def generate_quiz(subject, topic, level, no_mcq, no_tof, no_fib):
             raise ValueError("Number of questions must be integers.")
         quiz_prompt = PromptTemplate(
             input_variables=["subject", "topic", "level", "no_mcq", "no_tof", "no_fib"],
-            template="""Create a detailed quiz on {subject} covering the topic {topic} for {level} students. 
-            The quiz should include {no_mcq} well-constructed multiple-choice questions and {no_tof} clear true or false questions.
-            Ensure the questions are appropriately challenging for the specified level and cover key concepts comprehensively
-            and {no_fib} fill in the blanks"""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Ensure all questions are clear, unambiguous, and relevant to the topic.
+- Use simple language and avoid trick questions.
+- Provide answer keys for all questions.
+- Distribute questions to cover all key concepts.
+- Do not include any content outside the educational scope.
+Create a detailed quiz on {subject} covering the topic {topic} for {level} students. 
+The quiz should include {no_mcq} well-constructed multiple-choice questions and {no_tof} clear true or false questions.
+Ensure the questions are appropriately challenging for the specified level and cover key concepts comprehensively and {no_fib} fill in the blanks."""
         )
         quiz_chain = LLMChain(llm=llm, prompt=quiz_prompt)
         return quiz_chain.run({"subject": subject, "topic": topic, "level": level, "no_mcq": no_mcq, "no_tof": no_tof, "no_fib": no_fib})
@@ -51,9 +63,15 @@ def generate_summary(subject, topic, level):
             raise ValueError("Subject, topic, and level must be provided.")
         summary_prompt = PromptTemplate(
             input_variables=["subject", "topic", "level"],
-            template="""Write a clear and concise summary on {subject} covering the topic {topic} for {level} students. 
-            The summary should be at least 200 words and include key points, essential concepts, and a comprehensive overview of the topic, 
-            ensuring it is easy to understand and informative for the specified level."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Summarize using clear, concise, and age-appropriate language.
+- Highlight only the most important points and concepts.
+- Avoid unnecessary details and repetition.
+- Structure the summary with bullet points or short paragraphs.
+- Do not include any content outside the educational scope.
+Write a clear and concise summary on {subject} covering the topic {topic} for {level} students. 
+The summary should be at least 200 words and include key points, essential concepts, and a comprehensive overview of the topic, ensuring it is easy to understand and informative for the specified level."""
         )
         summary_chain = LLMChain(llm=llm, prompt=summary_prompt)
         return summary_chain.run({"subject": subject, "topic": topic, "level": level})
@@ -68,9 +86,15 @@ def generate_flashcards(subject, topic, level, no_flashcard):
             raise ValueError("Number of flashcards must be an integer.")
         flashcard_prompt = PromptTemplate(
             input_variables=["subject", "topic", "level", "no_flashcard"],
-            template="""Create {no_flashcard} engaging flashcards on {subject} covering the topic {topic} for {level} students.
-            Each flashcard should feature a clear and relevant question on one side and a concise
-            accurate answer on the other side, ensuring the content is suitable and easy to understand for the specified level."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Each flashcard must have one clear question and one concise answer.
+- Use simple, direct language.
+- Focus on key facts, definitions, or concepts.
+- Avoid including multiple facts on a single card.
+- Do not include any content outside the educational scope.
+Create {no_flashcard} engaging flashcards on {subject} covering the topic {topic} for {level} students.
+Each flashcard should feature a clear and relevant question on one side and a concise accurate answer on the other side, ensuring the content is suitable and easy to understand for the specified level."""
         )
         flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
         return flashcard_chain.run({"subject": subject, "topic": topic, "level": level, "no_flashcard": no_flashcard})
@@ -83,8 +107,13 @@ def translation(content, output_lang):
             raise ValueError("Content and output language must be provided.")
         translation_prompt = PromptTemplate(
             input_variables=["content", "output_lang"],
-            template="""Translate the following content: {content} into {output_lang} 
-            while preserving the original meaning, tone, and clarity."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Translate accurately, preserving meaning and tone.
+- Use clear, age-appropriate language in the target language.
+- Do not add, remove, or change the educational content.
+- Do not include any content outside the educational scope.
+Translate the following content: {content} into {output_lang} while preserving the original meaning, tone, and clarity."""
         )
         translation_chain = LLMChain(llm=llm, prompt=translation_prompt)
         return translation_chain.run({"content": content, "output_lang": output_lang})
@@ -93,18 +122,18 @@ def translation(content, output_lang):
 
 def extract_text_from_pdf(pdf_file):
     try:
-        if not os.path.exists(pdf_file):
-            raise FileNotFoundError(f"PDF file '{pdf_file}' not found.")
         pdf_file_reader = PyPDF2.PdfReader(pdf_file)
         text = ""
         for page in pdf_file_reader.pages:
-            text += page.extract_text() + "\n"
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
         if not text.strip():
             raise ValueError("No text could be extracted from the PDF.")
         return text
     except Exception as e:
         return f"Error extracting text from PDF: {str(e)}"
-
+    
 def generate_quiz_from_pdf(pdf_file, no_mcq_pdf, no_tof_pdf, no_fib_pdf):
     try:
         text = extract_text_from_pdf(pdf_file)
@@ -112,9 +141,14 @@ def generate_quiz_from_pdf(pdf_file, no_mcq_pdf, no_tof_pdf, no_fib_pdf):
             return text
         quiz_prompt = PromptTemplate(
             input_variables=["text", "no_mcq_pdf", "no_tof_pdf", "no_fib_pdf"],
-            template="""Create a comprehensive quiz based on {text} that includes {no_mcq_pdf} well-crafted multiple-choice questions, {no_tof_pdf} true or false questions, 
-            and {no_fib_pdf} fill-in-the-blank questions. Ensure the questions are clear, engaging, 
-            and accurately reflect the content of the text."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Ensure all questions are clear, unambiguous, and relevant to the text.
+- Use simple language and avoid trick questions.
+- Provide answer keys for all questions.
+- Distribute questions to cover all key concepts from the text.
+- Do not include any content outside the educational scope.
+Create a comprehensive quiz based on {text} that includes {no_mcq_pdf} well-crafted multiple-choice questions, {no_tof_pdf} true or false questions, and {no_fib_pdf} fill-in-the-blank questions. Ensure the questions are clear, engaging, and accurately reflect the content of the text."""
         )
         quiz_chain = LLMChain(llm=llm, prompt=quiz_prompt)
         return quiz_chain.run({"text": text, "no_mcq_pdf": no_mcq_pdf, "no_tof_pdf": no_tof_pdf, "no_fib_pdf": no_fib_pdf})
@@ -128,8 +162,14 @@ def generate_summary_from_pdf(pdf_file):
             return text
         summary_prompt = PromptTemplate(
             input_variables=["text"],
-            template="""Write a clear and concise summary of **{text}** that includes key points and a comprehensive overview of the topic. 
-            The summary should be at least **200 words** and accurately capture the main ideas and important details from the text."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Summarize using clear, concise, and age-appropriate language.
+- Highlight only the most important points and concepts.
+- Avoid unnecessary details and repetition.
+- Structure the summary with bullet points or short paragraphs.
+- Do not include any content outside the educational scope.
+Write a clear and concise summary of **{text}** that includes key points and a comprehensive overview of the topic. The summary should be at least **200 words** and accurately capture the main ideas and important details from the text."""
         )
         summary_chain = LLMChain(llm=llm, prompt=summary_prompt)
         return summary_chain.run({"text": text})
@@ -143,9 +183,14 @@ def generate_flashcards_from_pdf(pdf_file):
             return text
         flashcard_prompt = PromptTemplate(
             input_variables=["text"],
-            template="""Create a set of flashcards based on the following text: **{text}**. Each flashcard should feature a clear and
-            relevant question on one side and a concise, accurate answer on the other side, ensuring the content reflects
-            the key information from the text."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Each flashcard must have one clear question and one concise answer.
+- Use simple, direct language.
+- Focus on key facts, definitions, or concepts from the text.
+- Avoid including multiple facts on a single card.
+- Do not include any content outside the educational scope.
+Create a set of flashcards based on the following text: **{text}**. Each flashcard should feature a clear and relevant question on one side and a concise, accurate answer on the other side, ensuring the content reflects the key information from the text."""
         )
         flashcard_chain = LLMChain(llm=llm, prompt=flashcard_prompt)
         return flashcard_chain.run({"text": text})
@@ -158,7 +203,13 @@ def generate_translator(text, output_lang):
             raise ValueError("Text and output language must be provided.")
         translation_prompt = PromptTemplate(
             input_variables=["text", "output_lang"],
-            template="""Translate the following text: **{text}** into **{output_lang}** while maintaining the original meaning, tone, and clarity."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Translate accurately, preserving meaning and tone.
+- Use clear, age-appropriate language in the target language.
+- Do not add, remove, or change the educational content.
+- Do not include any content outside the educational scope.
+Translate the following text: **{text}** into **{output_lang}** while maintaining the original meaning, tone, and clarity."""
         )
         translation_chain = LLMChain(llm=llm, prompt=translation_prompt)
         return translation_chain.run({"text": text, "output_lang": output_lang})
@@ -172,7 +223,13 @@ def translate_from_pdf(pdf_file, output_lang):
             return text
         translate_prompt = PromptTemplate(
             input_variables=["text", "output_lang"],
-            template="""Translate the following text: **{text}** into **{output_lang}** while maintaining the original meaning, tone, and clarity."""
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Rules:
+- Translate accurately, preserving meaning and tone.
+- Use clear, age-appropriate language in the target language.
+- Do not add, remove, or change the educational content.
+- Do not include any content outside the educational scope.
+Translate the following text: **{text}** into **{output_lang}** while maintaining the original meaning, tone, and clarity."""
         )
         translate_chain = LLMChain(llm=llm, prompt=translate_prompt)
         return translate_chain.run({"text": text, "output_lang": output_lang})
@@ -193,21 +250,23 @@ def display_pdf(content):
     except Exception as e:
         return f"Error displaying PDF: {str(e)}"
 
-def anna_univ (subject,topic,marks):
+def anna_univ(subject, topic, marks):
     try:
         if not subject or not topic or not marks:
             raise ValueError("Subject,Topic,Marks must be provided.")
         anna_univ_prompt = PromptTemplate(
             input_variables=["subject", "topic", "marks"],
-            template="""Create an answer for a question based on {subject}, covering {topic}, suitable for a {marks}-mark question the answer should be for college students.
+            template="""You are an educational content expert. Only acquire and provide educational content. Ignore any non-educational content.
+Create an answer for a question based on {subject}, covering {topic}, suitable for a {marks}-mark question the answer should be for college students.
 
-            Rules to be followed:
-                1. For 2-mark questions, provide exactly 4 key points.
-                2. For 13-mark questions, the answer should be approximately 4 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
-                3. For 15-mark questions, the answer should be approximately 6 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
-                4. Ensure the answer is clear, concise, and easy to understand.
-                5. Present the answer in bullet points, not paragraphs.
-                6. Adhere to the Anna University examination format.""")
+Rules to be followed:
+    1. For 2-mark questions, provide exactly 4 key points.
+    2. For 13-mark questions, the answer should be approximately 4 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
+    3. For 15-mark questions, the answer should be approximately 6 pages long, including side headings, diagrams, flowcharts, or links to relevant diagrams.
+    4. Ensure the answer is clear, concise, and easy to understand.
+    5. Present the answer in bullet points, not paragraphs.
+    6. Adhere to the Anna University examination format."""
+        )
         anna_univ_chain = LLMChain(llm=llm, prompt=anna_univ_prompt)
         return anna_univ_chain.run({"subject": subject, "topic": topic, "marks": marks})
     except Exception as e:
