@@ -10,7 +10,7 @@ import base64
 
 load_dotenv(override=True)
 
-llm= ChatGoogleGenerativeAI(model='gemini-1.5-flash',google_api_key=os.getenv("API_KEY"))
+llm= ChatGoogleGenerativeAI(model='gemini-2.5-flash',google_api_key=os.getenv("API_KEY"))
 
 def generate_lesson(subject, topic, level):
     try:
